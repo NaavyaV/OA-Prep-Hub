@@ -1,0 +1,752 @@
+/*
+  OA Prep Hub — light.
+
+  The page is deliberately achromatic: paper, ink, and hairlines. Every saturated
+  color on screen carries data — difficulty (green/amber/red), a company's own brand
+  hex in its mark, and one blue reserved for things you can click. Nothing is tinted
+  for decoration, so color always means something.
+*/
+
+:root {
+  --paper: #fbfbf9;
+  --surface: #ffffff;
+  --surface-2: #f3f3f0;
+  --ink: #16181d;
+  --ink-2: #4c525b;
+  --ink-3: #878d97;
+  --line: #e5e4df;
+  --line-2: #d3d2cb;
+
+  --easy: #0f7a56;
+  --medium: #9a6100;
+  --hard: #bf332c;
+  --link: #1b47c4;
+
+  --sans: 'IBM Plex Sans', ui-sans-serif, system-ui, -apple-system, sans-serif;
+  --mono: 'IBM Plex Mono', ui-monospace, 'SF Mono', Menlo, monospace;
+
+  --gutter: 28px;
+  --radius: 9px;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  -webkit-text-size-adjust: 100%;
+}
+
+body {
+  margin: 0;
+  background: var(--paper);
+  color: var(--ink);
+  font-family: var(--sans);
+  font-size: 15px;
+  line-height: 1.55;
+  -webkit-font-smoothing: antialiased;
+}
+
+a {
+  color: inherit;
+}
+
+button {
+  font: inherit;
+  color: inherit;
+}
+
+:focus-visible {
+  outline: 2px solid var(--link);
+  outline-offset: 2px;
+  border-radius: 3px;
+}
+
+.app {
+  max-width: 1080px;
+  margin: 0 auto;
+  padding: 0 var(--gutter);
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+.main {
+  flex: 1;
+  padding: 40px 0 72px;
+}
+
+/* -------------------------------------------------------------- masthead */
+
+.masthead {
+  padding: 40px 0 32px;
+  border-bottom: 1px solid var(--line);
+  text-align: center;
+}
+
+.masthead-title {
+  display: inline-block;
+  font-family: var(--sans);
+  font-size: clamp(30px, 6vw, 54px);
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  color: var(--ink);
+  text-decoration: none;
+}
+
+/* --------------------------------------------------------------- stat band */
+
+/*
+  The landing page opens on the dataset itself. These numbers are the whole pitch —
+  how many companies, how much data sits behind them — so they are set at display
+  size, centered as one block, and nothing competes with them.
+*/
+.statband {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(120px, 200px));
+  justify-content: center;
+  gap: 4px 32px;
+  border-bottom: 1px solid var(--ink);
+  padding-bottom: 18px;
+  margin-bottom: 44px;
+}
+
+.stat-cell {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  min-width: 0;
+  text-align: center;
+}
+
+.stat-value {
+  font-family: var(--mono);
+  font-size: clamp(26px, 5.2vw, 46px);
+  font-weight: 600;
+  letter-spacing: -0.03em;
+  line-height: 1;
+  font-variant-numeric: tabular-nums;
+}
+
+.stat-label {
+  font-family: var(--mono);
+  font-size: 10.5px;
+  font-weight: 500;
+  letter-spacing: 0.09em;
+  text-transform: uppercase;
+  color: var(--ink-3);
+}
+
+/* ------------------------------------------------------------ section head */
+
+.section-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 18px;
+}
+
+.section-title {
+  font-size: 15px;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  margin: 0;
+}
+
+/* ---------------------------------------------------------------- controls */
+
+.search {
+  position: relative;
+  flex: 1;
+}
+
+.search-compact {
+  flex: 0 1 260px;
+}
+
+.search-icon {
+  position: absolute;
+  left: 11px;
+  top: 50%;
+  transform: translateY(-50%);
+  font-family: var(--mono);
+  font-size: 13px;
+  color: var(--ink-3);
+  pointer-events: none;
+}
+
+.search-input {
+  width: 100%;
+  padding: 9px 12px 9px 27px;
+  background: var(--surface);
+  border: 1px solid var(--line-2);
+  border-radius: var(--radius);
+  color: var(--ink);
+  font-family: var(--sans);
+  font-size: 14px;
+}
+
+.search-input::placeholder {
+  color: var(--ink-3);
+}
+
+.search-input:focus {
+  outline: none;
+  border-color: var(--link);
+  box-shadow: 0 0 0 3px rgb(27 71 196 / 0.12);
+}
+
+.search-input::-webkit-search-cancel-button {
+  cursor: pointer;
+}
+
+/* ------------------------------------------------------------ company mark */
+
+.mark {
+  width: var(--mark-size, 30px);
+  height: var(--mark-size, 30px);
+  flex: none;
+  display: grid;
+  place-items: center;
+  border-radius: calc(var(--mark-size, 30px) * 0.26);
+  background: color-mix(in srgb, var(--mark) 11%, var(--surface));
+  color: var(--mark);
+}
+
+.mark-initials {
+  font-family: var(--mono);
+  /* Three-letter acronyms (IBM, SAP, TCS) need to step down to fit the same tile. */
+  font-size: calc(var(--mark-size, 30px) * 0.4);
+  font-weight: 600;
+  letter-spacing: -0.03em;
+  line-height: 1;
+}
+
+.mark-initials:not(:empty)[data-len='3'] {
+  font-size: calc(var(--mark-size, 30px) * 0.3);
+}
+
+/* ------------------------------------------------------------ company grid */
+
+.company-grid {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(238px, 1fr));
+  gap: 8px;
+}
+
+.company-card {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 11px 13px;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  cursor: pointer;
+  text-align: left;
+  transition:
+    border-color 0.12s ease,
+    box-shadow 0.12s ease,
+    transform 0.12s ease;
+}
+
+.company-card:hover {
+  border-color: var(--line-2);
+  box-shadow: 0 1px 2px rgb(22 24 29 / 0.05);
+  transform: translateY(-1px);
+}
+
+.company-id {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-width: 0;
+}
+
+.company-name {
+  font-size: 14px;
+  font-weight: 500;
+  letter-spacing: -0.01em;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.company-figures {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 5px;
+  flex: none;
+}
+
+.company-count {
+  font-family: var(--mono);
+  font-size: 13px;
+  font-weight: 500;
+  font-variant-numeric: tabular-nums;
+  color: var(--ink-2);
+  line-height: 1;
+}
+
+.ratio {
+  display: flex;
+  gap: 1px;
+  width: 66px;
+  height: 4px;
+  overflow: hidden;
+  background: var(--surface-2);
+}
+
+.ratio-seg[data-level='Easy'] {
+  background: var(--easy);
+}
+.ratio-seg[data-level='Medium'] {
+  background: var(--medium);
+}
+.ratio-seg[data-level='Hard'] {
+  background: var(--hard);
+}
+
+/* ------------------------------------------------------------ company page */
+
+.crumb {
+  margin-bottom: 22px;
+}
+
+.back {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  padding: 6px 11px 6px 9px;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  font-size: 13px;
+  color: var(--ink-2);
+  cursor: pointer;
+  transition:
+    border-color 0.12s ease,
+    color 0.12s ease;
+}
+
+.back:hover {
+  border-color: var(--line-2);
+  color: var(--ink);
+}
+
+.company-head {
+  margin-bottom: 26px;
+}
+
+.company-identity {
+  display: flex;
+  align-items: center;
+  gap: 13px;
+}
+
+.company-title {
+  font-size: clamp(27px, 4.4vw, 38px);
+  font-weight: 600;
+  letter-spacing: -0.032em;
+  line-height: 1.1;
+  margin: 0;
+}
+
+.company-stats {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px 18px;
+  margin: 14px 0 0;
+  font-family: var(--mono);
+  font-size: 12px;
+  color: var(--ink-3);
+}
+
+.stat b {
+  color: var(--ink);
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+}
+
+.stat-easy b {
+  color: var(--easy);
+}
+.stat-medium b {
+  color: var(--medium);
+}
+.stat-hard b {
+  color: var(--hard);
+}
+
+.controls {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 20px;
+}
+
+.segmented {
+  display: flex;
+  gap: 2px;
+  padding: 2px;
+  background: var(--surface-2);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  flex: none;
+}
+
+.segment {
+  padding: 6px 13px;
+  background: none;
+  border: 0;
+  border-radius: 6px;
+  font-size: 13px;
+  color: var(--ink-2);
+  cursor: pointer;
+  transition:
+    background 0.12s ease,
+    color 0.12s ease;
+}
+
+.segment:hover {
+  color: var(--ink);
+}
+
+.segment[data-active='true'] {
+  background: var(--surface);
+  color: var(--ink);
+  font-weight: 500;
+  box-shadow: 0 1px 2px rgb(22 24 29 / 0.06);
+}
+
+.segment[data-active='true'][data-level='Easy'] {
+  color: var(--easy);
+}
+.segment[data-active='true'][data-level='Medium'] {
+  color: var(--medium);
+}
+.segment[data-active='true'][data-level='Hard'] {
+  color: var(--hard);
+}
+
+/* ------------------------------------------------------------ problem list */
+
+.list-count {
+  margin: 0 0 10px;
+  font-family: var(--mono);
+  font-size: 11px;
+  letter-spacing: 0.03em;
+  color: var(--ink-3);
+}
+
+/*
+  An actual <table> rather than a decorated list: every row shares the same
+  gridlines and column widths (table-layout: fixed pins them, so a long title in
+  one row can't push cells around in the next), with labeled headers like any
+  spreadsheet. The signal bar is the one visual-only column; every other cell is
+  literal text so the row still reads correctly if you paste it out of the browser.
+*/
+.table-wrap {
+  overflow-x: auto;
+  border: 1px solid var(--line-2);
+  border-radius: var(--radius);
+}
+
+.problems {
+  width: 100%;
+  min-width: 640px;
+  border-collapse: collapse;
+  table-layout: fixed;
+  font-size: 13.5px;
+}
+
+.problems th,
+.problems td {
+  border: 1px solid var(--line);
+  padding: 8px 10px;
+}
+
+.problems thead th {
+  background: var(--surface-2);
+  font-family: var(--mono);
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--ink-2);
+  text-align: left;
+  white-space: nowrap;
+}
+
+.problems tbody tr:hover {
+  background: var(--surface);
+}
+
+.problems .col-rank {
+  width: 46px;
+}
+.problems .col-signal {
+  width: 88px;
+}
+.problems .col-title {
+  width: auto;
+}
+.problems .col-difficulty {
+  width: 104px;
+}
+.problems .col-asked {
+  width: 118px;
+}
+.problems .col-freq {
+  width: 64px;
+}
+
+th.col-rank,
+th.col-freq {
+  text-align: right;
+}
+
+td.col-rank,
+td.col-freq {
+  font-family: var(--mono);
+  font-variant-numeric: tabular-nums;
+  color: var(--ink-3);
+  text-align: right;
+}
+
+td.col-asked {
+  font-family: var(--mono);
+  font-size: 12px;
+  color: var(--ink-3);
+  white-space: nowrap;
+}
+
+td.col-asked .na {
+  opacity: 0.5;
+}
+
+.signal {
+  display: block;
+  height: 4px;
+  background: var(--surface-2);
+  border-radius: 2px;
+  overflow: hidden;
+}
+
+.signal-bar {
+  display: block;
+  height: 100%;
+  background: var(--ink);
+  border-radius: 2px;
+}
+
+.problem-title {
+  display: block;
+  min-width: 0;
+  text-decoration: none;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.problem-title:hover {
+  color: var(--link);
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
+.ext {
+  font-size: 10px;
+  color: var(--ink-3);
+  margin-left: 5px;
+}
+
+.difficulty-tab {
+  display: inline-block;
+  font-family: var(--mono);
+  font-size: 10.5px;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  padding: 3px 8px;
+  border-radius: 999px;
+}
+
+.difficulty-tab[data-level='Easy'] {
+  color: var(--easy);
+  background: color-mix(in srgb, var(--easy) 13%, var(--surface));
+}
+.difficulty-tab[data-level='Medium'] {
+  color: var(--medium);
+  background: color-mix(in srgb, var(--medium) 13%, var(--surface));
+}
+.difficulty-tab[data-level='Hard'] {
+  color: var(--hard);
+  background: color-mix(in srgb, var(--hard) 13%, var(--surface));
+}
+
+.more {
+  display: block;
+  width: 100%;
+  margin-top: 18px;
+  padding: 11px;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  font-size: 13px;
+  color: var(--ink-2);
+  cursor: pointer;
+  transition:
+    border-color 0.12s ease,
+    color 0.12s ease;
+}
+
+.more:hover {
+  border-color: var(--line-2);
+  color: var(--ink);
+}
+
+.notice {
+  padding: 26px 0;
+  color: var(--ink-3);
+  font-size: 14px;
+}
+
+.notice-error {
+  color: var(--hard);
+}
+
+/* ------------------------------------------------------------------ footer */
+
+.footer {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 30px;
+  padding: 26px 0 40px;
+  border-top: 1px solid var(--line);
+}
+
+.footer-title {
+  font-family: var(--mono);
+  font-size: 10.5px;
+  font-weight: 500;
+  letter-spacing: 0.09em;
+  text-transform: uppercase;
+  color: var(--ink-3);
+  margin: 0 0 11px;
+}
+
+.sources,
+.facts {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+  font-size: 12.5px;
+  color: var(--ink-2);
+}
+
+.sources a {
+  color: var(--ink);
+  text-decoration: none;
+  border-bottom: 1px solid var(--line-2);
+}
+
+.sources a:hover {
+  color: var(--link);
+  border-bottom-color: currentColor;
+}
+
+.source-license {
+  display: block;
+  font-family: var(--mono);
+  font-size: 10.5px;
+  color: var(--ink-3);
+}
+
+/* -------------------------------------------------------------- responsive */
+
+@media (max-width: 720px) {
+  :root {
+    --gutter: 18px;
+  }
+
+  .main {
+    padding: 34px 0 48px;
+  }
+
+  .statband {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 20px 10px;
+  }
+
+  .masthead {
+    padding: 18px 0;
+  }
+
+  .section-head {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 11px;
+  }
+
+  .search-compact {
+    flex: 1;
+  }
+
+  .controls {
+    flex-direction: column;
+  }
+
+  .segmented {
+    width: 100%;
+  }
+
+  .segment {
+    flex: 1;
+    text-align: center;
+  }
+
+  /* Six columns don't fit a phone — keep rank, title, and score; the rest ride
+     along on the desktop table (reachable by horizontal scroll if ever needed). */
+  .problems {
+    min-width: 0;
+    font-size: 13px;
+  }
+
+  .col-signal,
+  .col-difficulty,
+  .col-asked {
+    display: none;
+  }
+
+  .problems th,
+  .problems td {
+    padding: 7px 8px;
+  }
+
+  .problem-title {
+    white-space: normal;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  * {
+    transition-duration: 0.01ms !important;
+    animation-duration: 0.01ms !important;
+  }
+
+  .company-card:hover {
+    transform: none;
+  }
+}
