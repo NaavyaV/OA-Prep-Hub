@@ -1,11 +1,13 @@
 import { useDeferredValue, useMemo, useState } from 'react';
 import CompanyMark from './CompanyMark.jsx';
+import useSearchShortcut from '../hooks/useSearchShortcut.js';
 
 const nf = new Intl.NumberFormat('en-US');
 
 export default function CompanyGrid({ meta, onSelect }) {
   const [query, setQuery] = useState('');
   const deferredQuery = useDeferredValue(query);
+  const searchRef = useSearchShortcut();
 
   const companies = useMemo(() => {
     const q = deferredQuery.trim().toLowerCase();
@@ -41,12 +43,13 @@ export default function CompanyGrid({ meta, onSelect }) {
               /
             </span>
             <input
+              ref={searchRef}
               className="search-input"
               type="search"
               value={query}
               onChange={(e) => setQuery(e.target.value)}
               placeholder="Search companies"
-              aria-label="Search companies"
+              aria-label="Search companies (press / to focus)"
               autoComplete="off"
             />
           </div>

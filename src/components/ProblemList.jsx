@@ -1,5 +1,6 @@
 import { useDeferredValue, useEffect, useMemo, useState } from 'react';
 import CompanyMark from './CompanyMark.jsx';
+import useSearchShortcut from '../hooks/useSearchShortcut.js';
 
 const nf = new Intl.NumberFormat('en-US');
 const DIFFICULTIES = ['All', 'Easy', 'Medium', 'Hard'];
@@ -25,6 +26,7 @@ export default function ProblemList({ company, problems, error, onBack }) {
   const [query, setQuery] = useState('');
   const [difficulty, setDifficulty] = useState('All');
   const [visible, setVisible] = useState(PAGE);
+  const searchRef = useSearchShortcut();
 
   // Typing stays responsive on Google's 2,000+ rows: the input updates immediately,
   // the (expensive) filtered list re-renders at a deferred priority.
@@ -92,12 +94,13 @@ export default function ProblemList({ company, problems, error, onBack }) {
             /
           </span>
           <input
+            ref={searchRef}
             className="search-input"
             type="search"
             value={query}
             onChange={(e) => setQuery(e.target.value)}
             placeholder={`Filter ${company.name} problems by title`}
-            aria-label={`Filter ${company.name} problems by title`}
+            aria-label={`Filter ${company.name} problems by title (press / to focus)`}
             autoComplete="off"
           />
         </div>
