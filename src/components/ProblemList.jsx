@@ -21,7 +21,7 @@ function relativeFromISO(iso) {
   return rtf.format(-Math.round(days / 365), 'year');
 }
 
-export default function ProblemList({ company, problems, error, onBack }) {
+export default function ProblemList({ company, problems, error, onBack, profile, profileLoading, profileError }) {
   const [query, setQuery] = useState('');
   const [difficulty, setDifficulty] = useState('All');
   const [visible, setVisible] = useState(PAGE);
@@ -55,6 +55,12 @@ export default function ProblemList({ company, problems, error, onBack }) {
     );
   }, [problems]);
 
+  const completedCount = useMemo(
+    () => problems?.filter((problem) => profile?.accepted.has(problem.slug)).length ?? 0,
+    [problems, profile],
+  );
+  const progress = problems?.length ? Math.round((completedCount / problems.length) * 100) : 0;
+
   return (
     <>
       <div className="crumb">
@@ -84,6 +90,17 @@ export default function ProblemList({ company, problems, error, onBack }) {
             </span>
           </p>
         )}
+        <div className="progress-panel">
+          <div className="progress-copy">
+            <span>YOUR PROGRESS</span>
+            <b>{profileLoading ? 'Syncing…' : `${completedCount} of ${problems?.length ?? 0} completed`}</b>
+          </div>
+          <div className="progress-track" role="progressbar" aria-valuenow={completedCount} aria-valuemin="0" aria-valuemax={problems?.length ?? 0}>
+            <span style={{ width: `${progress}%` }} />
+          </div>
+          <span className="progress-percent">{progress}%</span>
+        </div>
+        {profileError && <p className="notice notice-error">Progress sync unavailable: {profileError}</p>}
       </header>
 
       <div className="controls">
@@ -153,6 +170,8 @@ export default function ProblemList({ company, problems, error, onBack }) {
                     <th className="col-title" scope="col">
                       Title
                     </th>
+                    <th className="col-language" scope="col">Language</th>
+                    <th className="col-complete" scope="col">Done</th>
                     <th className="col-difficulty" scope="col">
                       Difficulty
                     </th>
@@ -188,6 +207,12 @@ export default function ProblemList({ company, problems, error, onBack }) {
                             ↗
                           </span>
                         </a>
+                      </td>
+                      <td className="col-language">{profile?.languages.get(p.slug) ?? <span className="na">—</span>}</td>
+                      <td className="col-complete">
+                        <label className="completion" data-complete={profile?.accepted.has(p.slug) || undefined}>
+                          <input type="checkbox" checked={Boolean(profile?.accepted.has(p.slug))} readOnly aria-label={`${p.title} completed`} />
+                        </label>
                       </td>
                       <td className="col-difficulty">
                         <span className="difficulty-tab" data-level={p.difficulty}>

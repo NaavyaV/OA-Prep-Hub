@@ -81,6 +81,7 @@ button {
 /* -------------------------------------------------------------- masthead */
 
 .masthead {
+  position: relative;
   padding: 40px 0 32px;
   border-bottom: 1px solid var(--line);
   text-align: center;
@@ -95,6 +96,63 @@ button {
   color: var(--ink);
   text-decoration: none;
 }
+
+.profile-button {
+  position: absolute;
+  right: var(--gutter);
+  top: 38px;
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  padding: 7px 10px;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  background: var(--surface);
+  color: var(--ink-2);
+  font-family: var(--mono);
+  font-size: 10px;
+  cursor: pointer;
+}
+
+.profile-button:hover { border-color: var(--line-2); color: var(--ink); }
+.profile-dot { width: 7px; height: 7px; border-radius: 50%; background: var(--ink-3); }
+.profile-dot[data-connected='true'] { background: var(--easy); }
+
+.username-layer {
+  position: fixed;
+  inset: 0;
+  z-index: 10;
+  display: grid;
+  place-items: center;
+  padding: 24px;
+  background: rgb(22 24 29 / 0.42);
+}
+
+.username-card {
+  width: min(100%, 440px);
+  padding: 34px;
+  border: 1px solid var(--line-2);
+  border-radius: 14px;
+  background: var(--paper);
+  box-shadow: 0 22px 70px rgb(22 24 29 / 0.18);
+}
+
+.eyebrow,
+.progress-copy span,
+.company-progress-label {
+  font-family: var(--mono);
+  font-size: 10px;
+  letter-spacing: 0.09em;
+  text-transform: uppercase;
+  color: var(--ink-3);
+}
+
+.username-card h1 { margin: 10px 0 9px; font-size: 29px; line-height: 1.1; letter-spacing: -0.035em; }
+.username-card p { margin: 0 0 24px; color: var(--ink-2); }
+.username-card label { display: block; margin-bottom: 7px; font-size: 12px; font-weight: 600; }
+.username-card input { width: 100%; padding: 11px 12px; border: 1px solid var(--line-2); border-radius: var(--radius); background: var(--surface); font: inherit; }
+.username-submit { width: 100%; margin-top: 12px; padding: 11px 13px; border: 0; border-radius: var(--radius); background: var(--ink); color: var(--paper); cursor: pointer; }
+.username-submit span { margin-left: 5px; }
 
 /* --------------------------------------------------------------- stat band */
 
@@ -289,6 +347,13 @@ button {
   flex: none;
 }
 
+.company-progress-label {
+  font-size: 8px;
+  letter-spacing: 0.02em;
+  text-transform: none;
+  white-space: nowrap;
+}
+
 .company-count {
   font-family: var(--mono);
   font-size: 13px;
@@ -371,6 +436,24 @@ button {
   font-size: 12px;
   color: var(--ink-3);
 }
+
+.progress-panel {
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  align-items: end;
+  gap: 13px;
+  margin-top: 22px;
+  padding: 14px 16px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  background: var(--surface);
+}
+
+.progress-copy { display: flex; flex-direction: column; gap: 2px; white-space: nowrap; }
+.progress-copy b { font-family: var(--mono); font-size: 12px; font-weight: 500; }
+.progress-track { height: 8px; overflow: hidden; border-radius: 999px; background: var(--surface-2); }
+.progress-track span { display: block; height: 100%; border-radius: inherit; background: var(--easy); transition: width 0.35s ease; }
+.progress-percent { min-width: 36px; font-family: var(--mono); font-size: 12px; color: var(--easy); text-align: right; }
 
 .stat b {
   color: var(--ink);
@@ -509,6 +592,8 @@ button {
 .problems .col-freq {
   width: 64px;
 }
+.problems .col-language { width: 104px; }
+.problems .col-complete { width: 66px; }
 
 th.col-rank,
 th.col-freq {
@@ -533,6 +618,11 @@ td.col-asked {
 td.col-asked .na {
   opacity: 0.5;
 }
+
+td.col-language { font-family: var(--mono); font-size: 11px; color: var(--ink-2); white-space: nowrap; }
+td.col-language .na { color: var(--ink-3); }
+td.col-complete { text-align: center; }
+.completion input { width: 16px; height: 16px; margin: 0; accent-color: var(--easy); cursor: default; }
 
 .signal {
   display: block;
@@ -726,9 +816,14 @@ td.col-asked .na {
 
   .col-signal,
   .col-difficulty,
-  .col-asked {
+  .col-asked,
+  .col-language {
     display: none;
   }
+
+  .profile-button { position: static; margin-top: 12px; }
+  .progress-panel { grid-template-columns: 1fr auto; }
+  .progress-track { grid-column: 1 / -1; grid-row: 2; }
 
   .problems th,
   .problems td {
