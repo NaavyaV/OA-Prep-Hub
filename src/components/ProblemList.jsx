@@ -56,7 +56,7 @@ export default function ProblemList({ company, problems, error, onBack, profile,
   }, [problems]);
 
   const completedCount = useMemo(
-    () => problems?.filter((problem) => profile?.accepted.has(problem.slug)).length ?? 0,
+    () => (problems ? problems.filter((problem) => profile?.accepted.has(problem.slug)).length : 0),
     [problems, profile],
   );
   const progress = problems?.length ? Math.round((completedCount / problems.length) * 100) : 0;
@@ -95,7 +95,7 @@ export default function ProblemList({ company, problems, error, onBack, profile,
             <span>YOUR PROGRESS</span>
             <b>{profileLoading ? 'Syncing…' : `${completedCount} of ${problems?.length ?? 0} completed`}</b>
           </div>
-          <div className="progress-track" role="progressbar" aria-valuenow={completedCount} aria-valuemin="0" aria-valuemax={problems?.length ?? 0}>
+          <div className="progress-track" role="progressbar" aria-label={`${company.name} problem completion`} aria-valuenow={completedCount} aria-valuemin={0} aria-valuemax={problems?.length ?? 0}>
             <span style={{ width: `${progress}%` }} />
           </div>
           <span className="progress-percent">{progress}%</span>

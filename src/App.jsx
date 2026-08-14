@@ -14,7 +14,8 @@ function readUsername() {
 }
 
 function saveUsername(username) {
-  document.cookie = `${USERNAME_COOKIE}=${encodeURIComponent(username)}; max-age=31536000; path=/; SameSite=Lax`;
+  const secure = window.location.protocol === 'https:' ? '; Secure' : '';
+  document.cookie = `${USERNAME_COOKIE}=${encodeURIComponent(username)}; max-age=31536000; path=/; SameSite=Lax${secure}`;
 }
 
 function normalizeProfile(payload) {
@@ -152,7 +153,7 @@ export default function App() {
               required
             />
             <button className="username-submit" type="submit">Continue <span>→</span></button>
-            {profileError && <p className="notice-error">{profileError}</p>}
+            {profileError && <p className="notice notice-error">{profileError}</p>}
           </form>
         </div>
       )}
@@ -169,7 +170,7 @@ export default function App() {
             profileError={profileError}
           />
         ) : (
-          <CompanyGrid meta={meta} onSelect={openCompany} profile={profile} />
+          <CompanyGrid meta={meta} onSelect={openCompany} connected={Boolean(username)} />
         )}
       </main>
 

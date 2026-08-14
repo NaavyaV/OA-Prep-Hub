@@ -3,7 +3,7 @@ import CompanyMark from './CompanyMark.jsx';
 
 const nf = new Intl.NumberFormat('en-US');
 
-export default function CompanyGrid({ meta, onSelect, profile }) {
+export default function CompanyGrid({ meta, onSelect, connected }) {
   const [query, setQuery] = useState('');
   const deferredQuery = useDeferredValue(query);
 
@@ -80,7 +80,7 @@ export default function CompanyGrid({ meta, onSelect, profile }) {
                       />
                       <span className="ratio-seg" data-level="Hard" style={{ flexGrow: c.hard }} />
                     </span>
-                    <span className="company-progress-label">{profile ? 'Progress syncs on company view' : 'Connect profile'}</span>
+                    <span className="company-progress-label">{connected ? 'Progress syncs on company view' : 'Connect profile'}</span>
                   </span>
                 </button>
               </li>
